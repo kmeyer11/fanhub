@@ -1,2 +1,12 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Gateway/Gateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/">
+    <Project Path="src/Services/FixturesService/FixturesService.csproj" />
+    <Project Path="src/Services/NotificationsService/NotificationsService.csproj" />
+    <Project Path="src/Services/RosterService/RosterService.csproj" />
+    <Project Path="src/Services/StandingsService/StandingsService.csproj" />
+    <Project Path="src/Services/TeamService/TeamService.csproj" />
+  </Folder>
 </Solution>
