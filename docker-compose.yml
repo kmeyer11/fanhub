@@ -58,6 +58,15 @@ services:
       - "5005:8080"
     depends_on:
       - redis
+  
+  user-service:
+    build:
+      context: .
+      dockerfile: src/Services/UserService/Dockerfile
+    ports:
+      - "5006:8080"
+    depends_on:
+      - user-db
 
   fixtures-db:
     image: postgres:16
@@ -94,6 +103,15 @@ services:
       POSTGRES_DB: standings
     ports:
       - "5436:5432"
+
+  user-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fanhub
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: users
+    ports:
+      - "5437:5432"
 
   redis:
     image: redis:7

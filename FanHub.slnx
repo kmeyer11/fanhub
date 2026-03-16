@@ -8,5 +8,6 @@
     <Project Path="src/Services/RosterService/RosterService.csproj" />
     <Project Path="src/Services/StandingsService/StandingsService.csproj" />
     <Project Path="src/Services/TeamService/TeamService.csproj" />
+    <Project Path="src/Services/UserService/UserService.csproj" />
   </Folder>
 </Solution>
