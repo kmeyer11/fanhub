@@ -11,14 +11,25 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+var retries = 10;
+while (retries-- > 0)
 {
-    var db = scope.ServiceProvider.GetRequiredService<IDbConnection>();
-    db.Open();
-    var sql = File.ReadAllText("Migrations/001_create_notifications_table.sql");
-    using var cmd = db.CreateCommand();
-    cmd.CommandText = sql;
-    cmd.ExecuteNonQuery();
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<IDbConnection>();
+        db.Open();
+        var sql = File.ReadAllText("Migrations/001_create_notifications_table.sql");
+        using var cmd = db.CreateCommand();
+        cmd.CommandText = sql;
+        cmd.ExecuteNonQuery();
+        break;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"DB not ready, retrying... ({ex.Message})");
+        Thread.Sleep(3000);
+    }
 }
 
 app.MapControllers();

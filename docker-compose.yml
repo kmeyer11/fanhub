@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: src/Gateway/Dockerfile
     ports:
-      - "5000:8080"
+      - "5050:8080"
     depends_on:
       - fixtures-service
       - team-service
@@ -57,6 +57,7 @@ services:
     ports:
       - "5005:8080"
     depends_on:
+      - notifications-db
       - redis
   
   user-service:
@@ -103,6 +104,15 @@ services:
       POSTGRES_DB: standings
     ports:
       - "5436:5432"
+
+  notifications-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fanhub
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: notifications
+    ports:
+      - "5438:5432"
 
   user-db:
     image: postgres:16
