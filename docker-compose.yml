@@ -63,16 +63,16 @@ services:
     image: postgres:16
     environment:
       POSTGRES_USER: fanhub
-      POSTGRES_PASSWORD: fanhub
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: fixtures
     ports:
-      - "5433:5432"
+    - "5433:5432"
 
   team-db:
     image: postgres:16
     environment:
       POSTGRES_USER: fanhub
-      POSTGRES_PASSWORD: fanhub
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: teams
     ports:
       - "5434:5432"
@@ -81,7 +81,7 @@ services:
     image: postgres:16
     environment:
       POSTGRES_USER: fanhub
-      POSTGRES_PASSWORD: fanhub
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: roster
     ports:
       - "5435:5432"
@@ -90,7 +90,7 @@ services:
     image: postgres:16
     environment:
       POSTGRES_USER: fanhub
-      POSTGRES_PASSWORD: fanhub
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: standings
     ports:
       - "5436:5432"
