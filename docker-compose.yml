@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: src/Gateway/Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - fixtures-service
+      - team-service
+      - roster-service
+      - standings-service
+      - notifications-service
+
+  fixtures-service:
+    build:
+      context: .
+      dockerfile: src/Services/FixturesService/Dockerfile
+    ports:
+      - "5001:8080"
+    depends_on:
+      - fixtures-db
+
+  team-service:
+    build:
+      context: .
+      dockerfile: src/Services/TeamService/Dockerfile
+    ports:
+      - "5002:8080"
+    depends_on:
+      - team-db
+
+  roster-service:
+    build:
+      context: .
+      dockerfile: src/Services/RosterService/Dockerfile
+    ports:
+      - "5003:8080"
+    depends_on:
+      - roster-db
+
+  standings-service:
+    build:
+      context: .
+      dockerfile: src/Services/StandingsService/Dockerfile
+    ports:
+      - "5004:8080"
+    depends_on:
+      - standings-db
+
+  notifications-service:
+    build:
+      context: .
+      dockerfile: src/Services/NotificationsService/Dockerfile
+    ports:
+      - "5005:8080"
+    depends_on:
+      - redis
+
+  fixtures-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fanhub
+      POSTGRES_PASSWORD: fanhub
+      POSTGRES_DB: fixtures
+    ports:
+      - "5433:5432"
+
+  team-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fanhub
+      POSTGRES_PASSWORD: fanhub
+      POSTGRES_DB: teams
+    ports:
+      - "5434:5432"
+
+  roster-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fanhub
+      POSTGRES_PASSWORD: fanhub
+      POSTGRES_DB: roster
+    ports:
+      - "5435:5432"
+
+  standings-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fanhub
+      POSTGRES_PASSWORD: fanhub
+      POSTGRES_DB: standings
+    ports:
+      - "5436:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
