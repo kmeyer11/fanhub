@@ -1,6 +1,7 @@
 using System.Data;
 using Npgsql;
 using FixturesService.Repositories;
+using FixturesService.Sync;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IDbConnection>(_ =>
     new NpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IFixtureRepository, FixtureRepository>();
+builder.Services.AddHttpClient<FixturesSyncService>();
+builder.Services.AddHostedService<FixturesSyncService>();
 
 var app = builder.Build();
 
