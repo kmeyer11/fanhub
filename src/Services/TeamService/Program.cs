@@ -1,6 +1,10 @@
 using System.Data;
+using Dapper;
 using Npgsql;
 using TeamService.Repositories;
+using TeamService.Sync;
+
+DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IDbConnection>(_ =>
     new NpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddHttpClient<TeamSyncService>();
+builder.Services.AddHostedService<TeamSyncService>();
 
 var app = builder.Build();
 

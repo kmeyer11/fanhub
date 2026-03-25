@@ -1,9 +1,11 @@
 using FixturesService.Models;
 using FixturesService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FixturesService.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class FixturesController : ControllerBase

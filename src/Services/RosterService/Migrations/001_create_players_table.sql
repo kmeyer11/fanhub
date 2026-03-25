@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS players (
     shirt_number INT NOT NULL,
     date_of_birth DATE NOT NULL,
     team_name VARCHAR(100) NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'active'
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
+    UNIQUE (name, team_name)
 );

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Auth;
 using UserService.Models;
@@ -34,7 +35,7 @@ public class UsersController : ControllerBase
         };
 
         await _repository.AddAsync(user);
-        return Ok("User registered successfully.");
+        return NoContent();
     }
 
     [HttpPost("login")]
@@ -48,10 +49,18 @@ public class UsersController : ControllerBase
         return Ok(new { token });
     }
 
+    [Authorize]
     [HttpPut("{id}/team")]
     public async Task<IActionResult> UpdateFavoriteTeam(int id, [FromBody] string teamName)
     {
         await _repository.UpdateFavoriteTeamAsync(id, teamName);
         return NoContent();
+    }
+
+    [HttpGet("by-team/{teamName}")]
+    public async Task<ActionResult<IEnumerable<int>>> GetIdsByFavoriteTeam(string teamName)
+    {
+        var ids = await _repository.GetIdsByFavoriteTeamAsync(teamName);
+        return Ok(ids);
     }
 }

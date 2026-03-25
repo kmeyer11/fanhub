@@ -2,6 +2,7 @@ using System.Data;
 using Dapper;
 using FixturesService.Models;
 using System.Text.Json;
+using FixturesService.Messaging;
 
 namespace FixturesService.Sync;
 
@@ -51,9 +52,8 @@ public class FixturesSyncService : BackgroundService
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("x-apisports-key", apiKey);
 
-        var season = DateTime.UtcNow.Month >= 7
-            ? DateTime.UtcNow.Year
-            : DateTime.UtcNow.Year - 1;
+        var season = await ResolveLatestSupportedSeasonAsync();
+        _logger.LogInformation("Using season {Season} for fixtures sync.", season);
 
         foreach (var leagueId in FixtureLeagues)
         {
@@ -69,6 +69,20 @@ public class FixturesSyncService : BackgroundService
         }
     }
 
+    private async Task<int> ResolveLatestSupportedSeasonAsync()
+    {
+        var candidate = DateTime.UtcNow.Month >= 7 ? DateTime.UtcNow.Year : DateTime.UtcNow.Year - 1;
+        for (var season = candidate; season >= candidate - 3; season--)
+        {
+            var probe = await _httpClient.GetAsync(
+                $"https://v3.football.api-sports.io/fixtures?league=39&season={season}&last=1");
+            var doc = JsonDocument.Parse(await probe.Content.ReadAsStringAsync());
+            if (doc.RootElement.TryGetProperty("results", out var r) && r.GetInt32() > 0)
+                return season;
+        }
+        return candidate - 1;
+    }
+
     private async Task SyncLeagueFixturesAsync(int leagueId, int season)
     {
         var response = await _httpClient.GetAsync(
@@ -82,6 +96,7 @@ public class FixturesSyncService : BackgroundService
 
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<IDbConnection>();
+        var publisher = scope.ServiceProvider.GetRequiredService<FixtureResultPublisher>();
 
         foreach (var item in fixturesArray.EnumerateArray())
         {
@@ -106,9 +121,22 @@ public class FixturesSyncService : BackgroundService
                 INSERT INTO fixtures (home_team, away_team, match_date, competition, venue, home_score, away_score, status)
                 VALUES (@HomeTeam, @AwayTeam, @MatchDate, @Competition, @Venue, @HomeScore, @AwayScore, @Status)
                 ON CONFLICT DO NOTHING
+                RETURNING id
                 """;
 
-            await db.ExecuteAsync(sql, fixture);
+            var insertedId = await db.ExecuteScalarAsync<int?>(sql, fixture);
+
+            if (insertedId.HasValue && fixture.Status == "FT" && fixture.HomeScore.HasValue && fixture.AwayScore.HasValue)
+            {
+                await publisher.PublishAsync(new FixtureResultMessage
+                {
+                    HomeTeam = fixture.HomeTeam,
+                    AwayTeam = fixture.AwayTeam,
+                    HomeScore = fixture.HomeScore.Value,
+                    AwayScore = fixture.AwayScore.Value,
+                    Competition = fixture.Competition
+                });
+            }
         }
     }
 }

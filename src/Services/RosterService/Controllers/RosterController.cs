@@ -1,9 +1,11 @@
 using RosterService.Models;
 using RosterService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RosterService.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class RosterController : ControllerBase

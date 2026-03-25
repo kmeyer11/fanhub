@@ -1,9 +1,11 @@
 using StandingsService.Models;
 using StandingsService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace StandingsService.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class StandingsController : ControllerBase

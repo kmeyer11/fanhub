@@ -1,0 +1,53 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Gateway (+ Frontend)",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Gateway/Gateway.csproj"],
+      "port": 5050
+    },
+    {
+      "name": "UserService",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Services/UserService/UserService.csproj"],
+      "port": 5006
+    },
+    {
+      "name": "FixturesService",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Services/FixturesService/FixturesService.csproj"],
+      "port": 5001
+    },
+    {
+      "name": "TeamService",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Services/TeamService/TeamService.csproj"],
+      "port": 5002
+    },
+    {
+      "name": "RosterService",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Services/RosterService/RosterService.csproj"],
+      "port": 5003
+    },
+    {
+      "name": "StandingsService",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Services/StandingsService/StandingsService.csproj"],
+      "port": 5004
+    },
+    {
+      "name": "NotificationsService",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Services/NotificationsService/NotificationsService.csproj"],
+      "port": 5005
+    },
+    {
+      "name": "Docker Compose (all services)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "--build"],
+      "port": 5050
+    }
+  ]
+}

@@ -8,4 +8,5 @@ public interface IUserRepository
     Task<User?> GetByIdAsync(int id);
     Task AddAsync(User user);
     Task UpdateFavoriteTeamAsync(int id, string teamName);
+    Task<IEnumerable<int>> GetIdsByFavoriteTeamAsync(string teamName);
 }

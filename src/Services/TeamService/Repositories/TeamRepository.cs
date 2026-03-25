@@ -15,7 +15,7 @@ public class TeamRepository : ITeamRepository
 
     public async Task<IEnumerable<Team>> GetAllAsync()
     {
-        const string sql = "SELECT * FROM teams ORDER BY name ASC";
+        const string sql = "SELECT * FROM teams ORDER BY league ASC, name ASC";
         return await _db.QueryAsync<Team>(sql);
     }
 

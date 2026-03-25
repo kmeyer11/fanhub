@@ -14,15 +14,16 @@ public class NotificationRepository : INotificationRepository
     }
 
     public async Task<IEnumerable<Notification>> GetByUserIdAsync(string userId)
-    {
-        const string sql = """
-            SELECT * FROM notifications
-            WHERE user_id = @UserId
-            ORDER BY created_at DESC
-            """;
+{
+    const string sql = """
+        SELECT id, user_id AS UserId, title, message, type, is_read AS IsRead, created_at AS CreatedAt
+        FROM notifications
+        WHERE user_id = @UserId
+        ORDER BY created_at DESC
+        """;
 
-        return await _db.QueryAsync<Notification>(sql, new { UserId = userId });
-    }
+    return await _db.QueryAsync<Notification>(sql, new { UserId = userId });
+}
 
     public async Task AddAsync(Notification notification)
     {

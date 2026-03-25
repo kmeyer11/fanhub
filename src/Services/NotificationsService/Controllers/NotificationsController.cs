@@ -1,9 +1,11 @@
 using NotificationsService.Models;
 using NotificationsService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NotificationsService.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class NotificationsController : ControllerBase
